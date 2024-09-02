@@ -49,7 +49,7 @@ public class HyphenationJpn : UIBehaviour
         UpdateText(text);
     }
 
-    void UpdateText(string str)
+    private void UpdateText(string str)
     {
         // update Text
         _Text.text = GetFormatedText(_Text, str);
@@ -61,14 +61,14 @@ public class HyphenationJpn : UIBehaviour
         UpdateText(text);
     }
 
-    float GetSpaceWidth(Text textComp)
+    private float GetSpaceWidth(Text textComp)
     {
         float tmp0 = GetTextWidth(textComp, "m m");
         float tmp1 = GetTextWidth(textComp, "mm");
         return (tmp0 - tmp1);
     }
 
-    float GetTextWidth(Text textComp, string message)
+    private float GetTextWidth(Text textComp, string message)
     {
         if (_text.supportRichText)
         {
@@ -79,7 +79,7 @@ public class HyphenationJpn : UIBehaviour
         return textComp.preferredWidth;
     }
 
-    string GetFormatedText(Text textComp, string msg)
+    private string GetFormatedText(Text textComp, string msg)
     {
         if (string.IsNullOrEmpty(msg))
         {
@@ -124,7 +124,7 @@ public class HyphenationJpn : UIBehaviour
         return lineBuilder.ToString();
     }
 
-    private List<string> GetWordList(string tmpText)
+    private static List<string> GetWordList(string tmpText)
     {
         List<string> words = new List<string>();
         StringBuilder line = new StringBuilder();
@@ -168,7 +168,7 @@ public class HyphenationJpn : UIBehaviour
     }
 
     // static
-    private readonly static string RITCH_TEXT_REPLACE =
+    private static readonly string RITCH_TEXT_REPLACE =
         "(\\<color=.*\\>|</color>|" +
         "\\<size=.n\\>|</size>|" +
         "<b>|</b>|" +
@@ -176,7 +176,7 @@ public class HyphenationJpn : UIBehaviour
 
     // 禁則処理 http://ja.wikipedia.org/wiki/%E7%A6%81%E5%89%87%E5%87%A6%E7%90%86
     // 行頭禁則文字
-    private readonly static char[] HYP_FRONT =
+    private static readonly char[] HYP_FRONT =
         (",)]｝、。）〕〉》」』】〙〗〟’”｠»" + // 終わり括弧類 簡易版
          "ァィゥェォッャュョヮヵヶっぁぃぅぇぉっゃゅょゎ" + //行頭禁則和字 
          "‐゠–〜ー" + //ハイフン類
@@ -184,10 +184,10 @@ public class HyphenationJpn : UIBehaviour
          "・:;" + //中点類
          "。.").ToCharArray(); //句点類
 
-    private readonly static char[] HYP_BACK =
+    private static readonly char[] HYP_BACK =
         "(（[｛〔〈《「『【〘〖〝‘“｟«".ToCharArray(); //始め括弧類
 
-    private readonly static char[] HYP_LATIN =
+    private static readonly char[] HYP_LATIN =
         ("abcdefghijklmnopqrstuvwxyz" +
          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
          "0123456789" +
