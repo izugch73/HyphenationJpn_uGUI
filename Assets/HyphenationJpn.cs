@@ -13,7 +13,7 @@ public class HyphenationJpn : UIBehaviour
     // http://answers.unity3d.com/questions/424874/showing-a-textarea-field-for-a-string-variable-in.html
     [TextArea(3, 10), SerializeField] private string text;
 
-    private RectTransform _RectTransform
+    private RectTransform RectTransform
     {
         get
         {
@@ -25,7 +25,7 @@ public class HyphenationJpn : UIBehaviour
 
     private RectTransform _rectTransform;
 
-    private Text _Text
+    private Text Text
     {
         get
         {
@@ -52,7 +52,7 @@ public class HyphenationJpn : UIBehaviour
     private void UpdateText(string str)
     {
         // update Text
-        _Text.text = GetFormattedText(_Text, str);
+        Text.text = GetFormattedText(Text, str);
     }
 
     public void SetText(string str)
@@ -72,7 +72,7 @@ public class HyphenationJpn : UIBehaviour
     {
         if (_text.supportRichText)
         {
-            message = Regex.Replace(message, RICH_TEXT_REPLACE, string.Empty);
+            message = Regex.Replace(message, RichTextReplace, string.Empty);
         }
 
         textComp.text = message;
@@ -86,7 +86,7 @@ public class HyphenationJpn : UIBehaviour
             return string.Empty;
         }
 
-        var rectWidth = _RectTransform.rect.width;
+        var rectWidth = RectTransform.rect.width;
         var spaceCharacterWidth = GetSpaceWidth(textComp);
 
         // override
@@ -128,7 +128,7 @@ public class HyphenationJpn : UIBehaviour
     {
         var words = new List<string>();
         var line = new StringBuilder();
-        var emptyChar = new char();
+        const char emptyChar = new char();
 
         for (var characterCount = 0; characterCount < tmpText.Length; characterCount++)
         {
@@ -147,7 +147,6 @@ public class HyphenationJpn : UIBehaviour
             {
                 words.Add(line.ToString());
                 line = new StringBuilder();
-                continue;
             }
         }
 
@@ -155,28 +154,24 @@ public class HyphenationJpn : UIBehaviour
     }
 
     // helper
-    public float textWidth
+    public float TextWidth
     {
-        set { _RectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value); }
-        get { return _RectTransform.rect.width; }
+        set => RectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value);
+        get => RectTransform.rect.width;
     }
 
-    public int fontSize
+    public int FontSize
     {
-        set { _Text.fontSize = value; }
-        get { return _Text.fontSize; }
+        set => Text.fontSize = value;
+        get => Text.fontSize;
     }
 
     // static
-    private static readonly string RICH_TEXT_REPLACE =
-        "(\\<color=.*\\>|</color>|" +
-        "\\<size=.n\\>|</size>|" +
-        "<b>|</b>|" +
-        "<i>|</i>)";
+    private const string RichTextReplace = @"(\<color=.*\>|</color>|" + @"\<size=.n\>|</size>|" + "<b>|</b>|" + "<i>|</i>)";
 
     // 禁則処理 http://ja.wikipedia.org/wiki/%E7%A6%81%E5%89%87%E5%87%A6%E7%90%86
     // 行頭禁則文字
-    private static readonly char[] HYP_FRONT =
+    private static readonly char[] HypFront =
         (",)]｝、。）〕〉》」』】〙〗〟’”｠»" + // 終わり括弧類 簡易版
          "ァィゥェォッャュョヮヵヶっぁぃぅぇぉっゃゅょゎ" + //行頭禁則和字 
          "‐゠–〜ー" + //ハイフン類
@@ -184,10 +179,10 @@ public class HyphenationJpn : UIBehaviour
          "・:;" + //中点類
          "。.").ToCharArray(); //句点類
 
-    private static readonly char[] HYP_BACK =
+    private static readonly char[] HypBack =
         "(（[｛〔〈《「『【〘〖〝‘“｟«".ToCharArray(); //始め括弧類
 
-    private static readonly char[] HYP_LATIN =
+    private static readonly char[] HypLatin =
         ("abcdefghijklmnopqrstuvwxyz" +
          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
          "0123456789" +
@@ -195,16 +190,16 @@ public class HyphenationJpn : UIBehaviour
 
     private static bool CHECK_HYP_FRONT(char str)
     {
-        return Array.Exists<char>(HYP_FRONT, item => item == str);
+        return Array.Exists<char>(HypFront, item => item == str);
     }
 
     private static bool CHECK_HYP_BACK(char str)
     {
-        return Array.Exists<char>(HYP_BACK, item => item == str);
+        return Array.Exists<char>(HypBack, item => item == str);
     }
 
     private static bool IsLatin(char s)
     {
-        return Array.Exists<char>(HYP_LATIN, item => item == s);
+        return Array.Exists<char>(HypLatin, item => item == s);
     }
 }
