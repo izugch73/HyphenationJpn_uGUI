@@ -50,7 +50,7 @@ public class HyphenationJpn : UIBehaviour
 		_Text.text = GetFormatedText(_Text, str);
 	}
 	
-	public void GetText(string str)
+	public void SetText(string str)
 	{
 		text = str;
 		UpdateText(text);
