@@ -52,7 +52,7 @@ public class HyphenationJpn : UIBehaviour
     private void UpdateText(string str)
     {
         // update Text
-        _Text.text = GetFormatedText(_Text, str);
+        _Text.text = GetFormattedText(_Text, str);
     }
 
     public void SetText(string str)
@@ -72,14 +72,14 @@ public class HyphenationJpn : UIBehaviour
     {
         if (_text.supportRichText)
         {
-            message = Regex.Replace(message, RITCH_TEXT_REPLACE, string.Empty);
+            message = Regex.Replace(message, RICH_TEXT_REPLACE, string.Empty);
         }
 
         textComp.text = message;
         return textComp.preferredWidth;
     }
 
-    private string GetFormatedText(Text textComp, string msg)
+    private string GetFormattedText(Text textComp, string msg)
     {
         if (string.IsNullOrEmpty(msg))
         {
@@ -168,7 +168,7 @@ public class HyphenationJpn : UIBehaviour
     }
 
     // static
-    private static readonly string RITCH_TEXT_REPLACE =
+    private static readonly string RICH_TEXT_REPLACE =
         "(\\<color=.*\\>|</color>|" +
         "\\<size=.n\\>|</size>|" +
         "<b>|</b>|" +
