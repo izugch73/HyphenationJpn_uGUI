@@ -65,7 +65,7 @@ public class HyphenationJpn : UIBehaviour
     {
         var tmp0 = GetTextWidth(textComp, "m m");
         var tmp1 = GetTextWidth(textComp, "mm");
-        return (tmp0 - tmp1);
+        return tmp0 - tmp1;
     }
 
     private float GetTextWidth(Text textComp, string message)
@@ -128,22 +128,22 @@ public class HyphenationJpn : UIBehaviour
     {
         var words = new List<string>();
         var line = new StringBuilder();
-        const char emptyChar = new char();
+        const char emptyChar = new();
 
         for (var characterCount = 0; characterCount < tmpText.Length; characterCount++)
         {
             var currentCharacter = tmpText[characterCount];
-            var nextCharacter = (characterCount < tmpText.Length - 1) ? tmpText[characterCount + 1] : emptyChar;
-            char preCharacter = (characterCount > 0) ? preCharacter = tmpText[characterCount - 1] : emptyChar;
+            var nextCharacter = characterCount < tmpText.Length - 1 ? tmpText[characterCount + 1] : emptyChar;
+            var preCharacter = characterCount > 0 ? tmpText[characterCount - 1] : emptyChar;
 
             line.Append(currentCharacter);
 
-            if (((IsLatin(currentCharacter) && IsLatin(preCharacter)) &&
-                 (IsLatin(currentCharacter) && !IsLatin(preCharacter))) ||
+            if ((IsLatin(currentCharacter) && IsLatin(preCharacter) &&
+                 IsLatin(currentCharacter) && !IsLatin(preCharacter)) ||
                 (!IsLatin(currentCharacter) && CHECK_HYP_BACK(preCharacter)) ||
                 (!IsLatin(nextCharacter) && !CHECK_HYP_FRONT(nextCharacter) && !CHECK_HYP_BACK(currentCharacter)) ||
-                (characterCount == tmpText.Length - 1) ||
-                (currentCharacter == '\n'))
+                characterCount == tmpText.Length - 1 ||
+                currentCharacter == '\n')
             {
                 words.Add(line.ToString());
                 line = new StringBuilder();
@@ -190,16 +190,16 @@ public class HyphenationJpn : UIBehaviour
 
     private static bool CHECK_HYP_FRONT(char str)
     {
-        return Array.Exists<char>(HypFront, item => item == str);
+        return Array.Exists(HypFront, item => item == str);
     }
 
     private static bool CHECK_HYP_BACK(char str)
     {
-        return Array.Exists<char>(HypBack, item => item == str);
+        return Array.Exists(HypBack, item => item == str);
     }
 
     private static bool IsLatin(char s)
     {
-        return Array.Exists<char>(HypLatin, item => item == s);
+        return Array.Exists(HypLatin, item => item == s);
     }
 }
