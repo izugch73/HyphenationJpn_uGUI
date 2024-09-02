@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HyphenationJpn
+namespace Hyphenation.Jpn
 {
     public class Sample : MonoBehaviour
     {

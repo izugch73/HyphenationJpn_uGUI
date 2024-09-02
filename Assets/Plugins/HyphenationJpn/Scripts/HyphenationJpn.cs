@@ -6,7 +6,7 @@ using System;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace HyphenationJpn
+namespace Hyphenation.Jpn
 {
     [RequireComponent(typeof(Text))]
     [ExecuteInEditMode]
