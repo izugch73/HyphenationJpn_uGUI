@@ -1,0 +1,8 @@
+{
+    "name": "com.izugch73.hypnationjpn",
+    "displayName": "HypnationJpn",
+    "version": "0.2.0",
+    "unity": "2022.3",
+    "description": "Forked from tsubaki/HyphenationJpn_uGUI",
+    "dependencies": {}
+}
