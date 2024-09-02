@@ -1,199 +1,205 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using System.Text.RegularExpressions;
-using UnityEngine.EventSystems;
 using System.Text;
 using System;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Text))]
 [ExecuteInEditMode]
 public class HyphenationJpn : UIBehaviour
 {
-	// http://answers.unity3d.com/questions/424874/showing-a-textarea-field-for-a-string-variable-in.html
-	[TextArea(3,10), SerializeField]
-	private string text;
+    // http://answers.unity3d.com/questions/424874/showing-a-textarea-field-for-a-string-variable-in.html
+    [TextArea(3, 10), SerializeField] private string text;
 
-	private RectTransform _RectTransform{
-		get{
-			if( _rectTransform == null )
-				_rectTransform = GetComponent<RectTransform>();
-			return _rectTransform;
-		}
-	}
-	private RectTransform _rectTransform;
+    private RectTransform RectTransform
+    {
+        get
+        {
+            if (_rectTransform == null)
+                _rectTransform = GetComponent<RectTransform>();
+            return _rectTransform;
+        }
+    }
 
-	private Text _Text{
-		get{
-			if( _text == null )
-				_text = GetComponent<Text>();
-			return _text;
-		}
-	}
-	private Text _text;
+    private RectTransform _rectTransform;
 
-	protected override void OnRectTransformDimensionsChange ()
-	{
-		base.OnRectTransformDimensionsChange();
-		UpdateText(text);
-	}
+    private Text Text
+    {
+        get
+        {
+            if (_text == null)
+                _text = GetComponent<Text>();
+            return _text;
+        }
+    }
 
-	protected override void OnValidate()
-	{
-		base.OnValidate();
-		UpdateText(text);
-	}
+    private Text _text;
 
-	void UpdateText(string str)
-	{
-		// update Text
-		_Text.text = GetFormatedText(_Text, str);
-	}
-	
-	public void GetText(string str)
-	{
-		text = str;
-		UpdateText(text);
-	}
+    protected override void OnRectTransformDimensionsChange()
+    {
+        base.OnRectTransformDimensionsChange();
+        UpdateText(text);
+    }
 
-	float GetSpaceWidth(Text textComp)
-	{
-		float tmp0 = GetTextWidth(textComp, "m m");
-		float tmp1 = GetTextWidth(textComp, "mm");
-		return (tmp0 - tmp1);
-	}
+    protected override void OnValidate()
+    {
+        base.OnValidate();
+        UpdateText(text);
+    }
 
-	float GetTextWidth(Text textComp, string message)
-	{
-		if( _text.supportRichText ){
-			message = Regex.Replace(message, RITCH_TEXT_REPLACE, string.Empty);
-		}
-		textComp.text = message;
-		return textComp.preferredWidth;
-	}
+    private void UpdateText(string str)
+    {
+        // update Text
+        Text.text = GetFormattedText(Text, str);
+    }
 
-	string GetFormatedText(Text textComp, string msg)
-	{
-		if(string.IsNullOrEmpty(msg)){
-			return string.Empty;
-		}
-		
-		float rectWidth = _RectTransform.rect.width;
-		float spaceCharacterWidth = GetSpaceWidth(textComp);
+    public void SetText(string str)
+    {
+        text = str;
+        UpdateText(text);
+    }
 
-		// override
-		textComp.horizontalOverflow = HorizontalWrapMode.Overflow;
+    private float GetSpaceWidth(Text textComp)
+    {
+        var tmp0 = GetTextWidth(textComp, "m m");
+        var tmp1 = GetTextWidth(textComp, "mm");
+        return (tmp0 - tmp1);
+    }
 
-		// work
-		StringBuilder lineBuilder = new StringBuilder();
+    private float GetTextWidth(Text textComp, string message)
+    {
+        if (_text.supportRichText)
+        {
+            message = Regex.Replace(message, RichTextReplace, string.Empty);
+        }
 
-		float lineWidth = 0;
-		foreach( var originalLine in GetWordList(msg))
-		{
-			lineWidth += GetTextWidth(textComp, originalLine);
+        textComp.text = message;
+        return textComp.preferredWidth;
+    }
 
-			if( originalLine == Environment.NewLine ){
-				lineWidth = 0;
-			}else{
-				if( originalLine == " " ){
-					lineWidth += spaceCharacterWidth;
-				}
+    private string GetFormattedText(Text textComp, string msg)
+    {
+        if (string.IsNullOrEmpty(msg))
+        {
+            return string.Empty;
+        }
 
-				if( lineWidth > rectWidth ){
-					lineBuilder.Append( Environment.NewLine );
-					lineWidth = GetTextWidth(textComp, originalLine);
-				}
-			}
-			lineBuilder.Append( originalLine );
-		}
+        var rectWidth = RectTransform.rect.width;
+        var spaceCharacterWidth = GetSpaceWidth(textComp);
 
-		return lineBuilder.ToString();
-	}
+        // override
+        textComp.horizontalOverflow = HorizontalWrapMode.Overflow;
 
-	private List<string> GetWordList(string tmpText)
-	{
-		List<string> words = new List<string>();
-		StringBuilder line = new StringBuilder();
-		char emptyChar = new char();
+        // work
+        var lineBuilder = new StringBuilder();
 
-		for(int characterCount = 0; characterCount < tmpText.Length; characterCount ++)
-		{
-			char currentCharacter = tmpText[characterCount];
-			char nextCharacter = (characterCount < tmpText.Length-1) ? tmpText[characterCount+1] : emptyChar;
-			char preCharacter = (characterCount > 0) ? preCharacter = tmpText[characterCount-1] : emptyChar;
+        float lineWidth = 0;
+        foreach (var originalLine in GetWordList(Regex.Replace(msg, Environment.NewLine, "\n")))
+        {
+            lineWidth += GetTextWidth(textComp, originalLine);
 
-			line.Append( currentCharacter );
+            if (originalLine == "\n")
+            {
+                lineWidth = 0;
+            }
+            else
+            {
+                if (originalLine == " ")
+                {
+                    lineWidth += spaceCharacterWidth;
+                }
 
-			if( ((IsLatin(currentCharacter) && IsLatin(preCharacter) ) && (IsLatin(currentCharacter) && !IsLatin(preCharacter))) ||
-			    (!IsLatin(currentCharacter) && CHECK_HYP_BACK(preCharacter)) ||
-			    (!IsLatin(nextCharacter) && !CHECK_HYP_FRONT(nextCharacter) && !CHECK_HYP_BACK(currentCharacter))||
-			    (characterCount == tmpText.Length - 1)){
-				words.Add(line.ToString());
-				line = new StringBuilder();
-				continue;
-			}
-		}
-		return words;
-	}
+                if (lineWidth > rectWidth)
+                {
+                    lineBuilder.Append(Environment.NewLine);
+                    lineWidth = GetTextWidth(textComp, originalLine);
+                }
+            }
 
-	// helper
-	public float textWidth{
-		set{
-			_RectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value);
-		}
-		get{
-			return _RectTransform.rect.width;
-		}
-	}
-	public int fontSize
-	{
-		set{
-			_Text.fontSize = value;
-		}
-		get{
-			return _Text.fontSize;
-		}
-	}
+            lineBuilder.Append(originalLine);
+        }
 
-	// static
-	private readonly static string RITCH_TEXT_REPLACE = 
-		"(\\<color=.*\\>|</color>|" +
-		"\\<size=.n\\>|</size>|"+
-		"<b>|</b>|"+
-		"<i>|</i>)";
+        return lineBuilder.ToString();
+    }
 
-	// 禁則処理 http://ja.wikipedia.org/wiki/%E7%A6%81%E5%89%87%E5%87%A6%E7%90%86
-	// 行頭禁則文字
-	private readonly static char[] HYP_FRONT = 
-		(",)]｝、。）〕〉》」』】〙〗〟’”｠»" +// 終わり括弧類 簡易版
-		 "ァィゥェォッャュョヮヵヶっぁぃぅぇぉっゃゅょゎ" +//行頭禁則和字 
-		 "‐゠–〜ー" +//ハイフン類
-		 "?!！？‼⁇⁈⁉" +//区切り約物
-		 "・:;" +//中点類
-		 "。.").ToCharArray();//句点類
+    private static List<string> GetWordList(string tmpText)
+    {
+        var words = new List<string>();
+        var line = new StringBuilder();
+        const char emptyChar = new char();
 
-	private readonly static char[] HYP_BACK = 
-		 "(（[｛〔〈《「『【〘〖〝‘“｟«".ToCharArray();//始め括弧類
+        for (var characterCount = 0; characterCount < tmpText.Length; characterCount++)
+        {
+            var currentCharacter = tmpText[characterCount];
+            var nextCharacter = (characterCount < tmpText.Length - 1) ? tmpText[characterCount + 1] : emptyChar;
+            char preCharacter = (characterCount > 0) ? preCharacter = tmpText[characterCount - 1] : emptyChar;
 
-	private readonly static char[] HYP_LATIN = 
-		("abcdefghijklmnopqrstuvwxyz" +
-	     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + 
-	     "0123456789" + 
-	     "<>=/().,").ToCharArray();
+            line.Append(currentCharacter);
 
-	private static bool CHECK_HYP_FRONT(char str)
-	{
-		return Array.Exists<char>(HYP_FRONT, item => item == str);
-	}
+            if (((IsLatin(currentCharacter) && IsLatin(preCharacter)) &&
+                 (IsLatin(currentCharacter) && !IsLatin(preCharacter))) ||
+                (!IsLatin(currentCharacter) && CHECK_HYP_BACK(preCharacter)) ||
+                (!IsLatin(nextCharacter) && !CHECK_HYP_FRONT(nextCharacter) && !CHECK_HYP_BACK(currentCharacter)) ||
+                (characterCount == tmpText.Length - 1) ||
+                (currentCharacter == '\n'))
+            {
+                words.Add(line.ToString());
+                line = new StringBuilder();
+            }
+        }
 
-	private static bool CHECK_HYP_BACK(char str)
-	{
-		return Array.Exists<char>(HYP_BACK, item => item == str);
-	}
+        return words;
+    }
 
-	private static bool IsLatin(char s)
-	{
-		return Array.Exists<char>(HYP_LATIN, item => item == s);
-	}
+    // helper
+    public float TextWidth
+    {
+        set => RectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value);
+        get => RectTransform.rect.width;
+    }
+
+    public int FontSize
+    {
+        set => Text.fontSize = value;
+        get => Text.fontSize;
+    }
+
+    // static
+    private const string RichTextReplace = @"(\<color=.*\>|</color>|" + @"\<size=.n\>|</size>|" + "<b>|</b>|" + "<i>|</i>)";
+
+    // 禁則処理 http://ja.wikipedia.org/wiki/%E7%A6%81%E5%89%87%E5%87%A6%E7%90%86
+    // 行頭禁則文字
+    private static readonly char[] HypFront =
+        (",)]｝、。）〕〉》」』】〙〗〟’”｠»" + // 終わり括弧類 簡易版
+         "ァィゥェォッャュョヮヵヶっぁぃぅぇぉっゃゅょゎ" + //行頭禁則和字 
+         "‐゠–〜ー" + //ハイフン類
+         "?!！？‼⁇⁈⁉" + //区切り約物
+         "・:;" + //中点類
+         "。.").ToCharArray(); //句点類
+
+    private static readonly char[] HypBack =
+        "(（[｛〔〈《「『【〘〖〝‘“｟«".ToCharArray(); //始め括弧類
+
+    private static readonly char[] HypLatin =
+        ("abcdefghijklmnopqrstuvwxyz" +
+         "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+         "0123456789" +
+         "<>=/().,").ToCharArray();
+
+    private static bool CHECK_HYP_FRONT(char str)
+    {
+        return Array.Exists<char>(HypFront, item => item == str);
+    }
+
+    private static bool CHECK_HYP_BACK(char str)
+    {
+        return Array.Exists<char>(HypBack, item => item == str);
+    }
+
+    private static bool IsLatin(char s)
+    {
+        return Array.Exists<char>(HypLatin, item => item == s);
+    }
 }
