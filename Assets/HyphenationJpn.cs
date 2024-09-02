@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using System.Text.RegularExpressions;
-using UnityEngine.EventSystems;
 using System.Text;
 using System;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Text))]
 [ExecuteInEditMode]
