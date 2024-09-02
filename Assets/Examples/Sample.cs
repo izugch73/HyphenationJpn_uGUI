@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HypnationJpn
+namespace HyphenationJpn
 {
     public class Sample : MonoBehaviour
     {
