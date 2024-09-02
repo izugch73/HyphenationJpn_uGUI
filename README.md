@@ -1,10 +1,9 @@
-HyphenationJpn_uGUI
-===================
+# HyphenationJpn_uGUI
+HyphenationJpn_uGUI is a Japanese hyphenation library for Unity uGUI.
 
-uGUIでの禁則処理
+# Compatible Versions
+2022.3.32f1
 
-unity4.6.1 mac
-
-Win未確認。コードの中で日本語使っているので、文字コードでエラーが起きるかも？
-
-![image](https://dl.dropboxusercontent.com/u/56297224/UnitySumple2/%E7%A6%81%E5%89%87%E5%87%A6%E7%90%86/hyp.gif)
+# License
+Following the original license.  
+https://github.com/tsubaki/HyphenationJpn_uGUI
