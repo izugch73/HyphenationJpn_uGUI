@@ -63,8 +63,8 @@ public class HyphenationJpn : UIBehaviour
 
     private float GetSpaceWidth(Text textComp)
     {
-        float tmp0 = GetTextWidth(textComp, "m m");
-        float tmp1 = GetTextWidth(textComp, "mm");
+        var tmp0 = GetTextWidth(textComp, "m m");
+        var tmp1 = GetTextWidth(textComp, "mm");
         return (tmp0 - tmp1);
     }
 
@@ -86,14 +86,14 @@ public class HyphenationJpn : UIBehaviour
             return string.Empty;
         }
 
-        float rectWidth = _RectTransform.rect.width;
-        float spaceCharacterWidth = GetSpaceWidth(textComp);
+        var rectWidth = _RectTransform.rect.width;
+        var spaceCharacterWidth = GetSpaceWidth(textComp);
 
         // override
         textComp.horizontalOverflow = HorizontalWrapMode.Overflow;
 
         // work
-        StringBuilder lineBuilder = new StringBuilder();
+        var lineBuilder = new StringBuilder();
 
         float lineWidth = 0;
         foreach (var originalLine in GetWordList(Regex.Replace(msg, Environment.NewLine, "\n")))
@@ -126,14 +126,14 @@ public class HyphenationJpn : UIBehaviour
 
     private static List<string> GetWordList(string tmpText)
     {
-        List<string> words = new List<string>();
-        StringBuilder line = new StringBuilder();
-        char emptyChar = new char();
+        var words = new List<string>();
+        var line = new StringBuilder();
+        var emptyChar = new char();
 
-        for (int characterCount = 0; characterCount < tmpText.Length; characterCount++)
+        for (var characterCount = 0; characterCount < tmpText.Length; characterCount++)
         {
-            char currentCharacter = tmpText[characterCount];
-            char nextCharacter = (characterCount < tmpText.Length - 1) ? tmpText[characterCount + 1] : emptyChar;
+            var currentCharacter = tmpText[characterCount];
+            var nextCharacter = (characterCount < tmpText.Length - 1) ? tmpText[characterCount + 1] : emptyChar;
             char preCharacter = (characterCount > 0) ? preCharacter = tmpText[characterCount - 1] : emptyChar;
 
             line.Append(currentCharacter);
