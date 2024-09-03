@@ -45,11 +45,13 @@ namespace Hyphenation.Jpn
             UpdateText(text);
         }
 
+#if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
             UpdateText(text);
         }
+#endif
 
         private void UpdateText(string str)
         {
